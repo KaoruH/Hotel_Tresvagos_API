@@ -33,16 +33,6 @@ public class Reserva {
     @JoinColumn(name="huesped_id", referencedColumnName = "huesped_id")
     private Huesped huesped;
 
-    // @Column(name = "fecha_reserva")
-    // private Date fechaReserva;
-    // @Column(name = "fecha_ingreso")
-    // private Date fechaIngreso;
-    // @Column(name = "fecha_egreso")
-    // private Date fechaEgreso;
-
- 
-
-
     public int getReservaId() {
         return reservaId;
     }
