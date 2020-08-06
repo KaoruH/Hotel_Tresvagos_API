@@ -5,13 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import ar.com.ada.api.hoteltresvagos.entities.Reserva;
 import ar.com.ada.api.hoteltresvagos.services.ReservaService;
 
-@Controller
+@RestController
 public class ReservaController {
 
     @Autowired
@@ -33,28 +32,18 @@ public class ReservaController {
         
     }
 
-    @GetMapping("/reservas/{id}")
-    public ResponseEntity<Reserva> getReservaById(@PathVariable int reservaId){
+    @GetMapping("/reservas/{dni}")
+    public ResponseEntity<List<Reserva>> getReservaById(@PathVariable Integer dni){
 
-        Reserva reserva = reservaService.buscarPorId(reservaId);
+        List<Reserva> listaReservas = reservaService.buscarPorDni(dni);
 
-        if(reserva == null)
+        if(listaReservas == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.ok(reserva);
+        return ResponseEntity.ok(listaReservas);
     }
 
-    // @PostMapping("/reservas")
-    // public ResponseEntity<?> postReserva(@RequestBody Reserva reserva){
 
-    //     GenericResponse genericRespo = new GenericResponse();
-
-    //     boolean respuesta = reservaService.
-
-
-
-        
-    // }
 
 
     

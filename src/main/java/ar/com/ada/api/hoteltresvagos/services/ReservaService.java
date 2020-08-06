@@ -1,11 +1,14 @@
 package ar.com.ada.api.hoteltresvagos.services;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ar.com.ada.api.hoteltresvagos.entities.Huesped;
 import ar.com.ada.api.hoteltresvagos.entities.Reserva;
 import ar.com.ada.api.hoteltresvagos.repos.ReservaRepository;
 
@@ -14,6 +17,9 @@ public class ReservaService {
 
     @Autowired
     ReservaRepository reservaRepo;
+
+    @Autowired
+    HuespedService huespedService;
 
     public List<Reserva> buscarReservasPorNombre(String nombre) {
 
@@ -36,7 +42,7 @@ public class ReservaService {
         return true;
     }
 
-    public boolean baja(int reservaId){
+    public boolean baja(Integer reservaId){
 
         Reserva reserva = buscarPorId(reservaId);
 
@@ -46,7 +52,12 @@ public class ReservaService {
         return baja(reserva);
     }
 
-    public Reserva buscarPorId(int reservaId) {
+    public List<Reserva> buscarPorDni(Integer dni) {
+
+        return reservaRepo.findAllByReservaDniHuesped(dni);
+    }
+
+    public Reserva buscarPorId(Integer reservaId) {
 
         Optional<Reserva> reserva = reservaRepo.findById(reservaId);
 
@@ -56,36 +67,55 @@ public class ReservaService {
         return null;
     }
 
-    // TODO hacer un crear reserva
-    // public boolean crearReserva(Reserva reserva){
+    public Reserva crearReserva(Integer huespedId, LocalDate fechaIngreso, LocalDate fechaEgreso, BigDecimal importePagado) {
 
-    //     if (existe(huesped.getDni()))
-    //         return false;
+        Reserva reserva = new Reserva();
 
-    //     grabar(huesped);
-    //     return true;
+        reserva.setFechaReserva(LocalDate.now());
+        reserva.setFechaIngreso(fechaIngreso);
+        reserva.setFechaEgreso(fechaEgreso);
+        reserva.setImporteReserva(new BigDecimal(500));
+        reserva.setImporteTotal(new BigDecimal(10000));
+        reserva.setImportePagado(importePagado);
+        reserva.setImporteAdeudado(reserva.getImporteTotal().subtract(reserva.getImportePagado()));
 
-    // }
+        if (reserva.getImporteAdeudado().doubleValue() == 0) {
 
-    // TODO hacer un actualizar Reserva
-    // public boolean actualizarHuesped(Huesped huespedOriginal, Huesped huespedConInfoNueva){
+            reserva.setEstadoId(10);
 
-    //     huespedOriginal.setNombre(huespedConInfoNueva.getNombre());
-    //     huespedOriginal.setDomicilio(huespedConInfoNueva.getDomicilio());
-    //     huespedOriginal.setDomicilioAlternativo(huespedConInfoNueva.getDomicilioAlternativo());
+        } else {
 
-    //     grabar(huespedOriginal);
+            reserva.setEstadoId(20);
 
-    //     return true;
-    // }
+        }
 
-    // TODO hacer existe
-    // public boolean existe(int dni){
+        Huesped huesped = huespedService.buscarPorId(huespedId);
+        huesped.agregarReserva(reserva);
 
-    //     Reserva reserva = buscarPorId(reservaId);
+        crearReserva(reserva);
 
-    //     return huesped != null;
-    // }
+        return reserva;
+
+    }
+
+    public void crearReserva(Reserva reserva) {
+
+        grabar(reserva);
+
+    }
+
+    public boolean actualizarReserva(Reserva original, Reserva nueva) {
+        // Aca solo dejamos que se actualize las fechas tanto de reserva como de ingreso y egreso
+
+        original.setFechaReserva(LocalDate.now());
+        original.setFechaIngreso(nueva.getFechaIngreso());
+        original.setFechaEgreso(nueva.getFechaEgreso());
+
+        grabar(original);
+
+        return true;
+        
+    }
 
 
 }

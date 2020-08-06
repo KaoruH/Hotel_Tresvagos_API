@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import ar.com.ada.api.hoteltresvagos.entities.Huesped;
+import ar.com.ada.api.hoteltresvagos.models.request.PutHuespedRequest;
 import ar.com.ada.api.hoteltresvagos.models.response.GenericResponse;
 import ar.com.ada.api.hoteltresvagos.services.HuespedService;
 
@@ -31,15 +32,16 @@ public class HuespedController {
         return listaHuesped;
     }
 
-    @GetMapping("/huespedes/{id}")
-    public ResponseEntity<Huesped> getHuespedById(@PathVariable int huespedId) {
+    @GetMapping("/huespedes/{dni}")
+    public ResponseEntity<Huesped> getHuespedById(@PathVariable Integer dni) {
 
-        Huesped huesped = huespedService.buscarPorId(huespedId);
+        Huesped huesped = huespedService.buscarPorDni(dni);
 
-        if (huesped == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (huesped != null) {
+            return ResponseEntity.ok(huesped);
+        
         }
-        return ResponseEntity.ok(huesped);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/huespedes")
@@ -65,30 +67,24 @@ public class HuespedController {
     }
 
     @PutMapping("/huespedes/{id}")
-    public ResponseEntity<?> postHuesped(@PathVariable int id, @RequestBody Huesped req) {
-
-        GenericResponse r = new GenericResponse();
+    public ResponseEntity<?> putHuesped(@PathVariable Integer id, @RequestBody PutHuespedRequest req) {
 
         Huesped huespedOriginal = huespedService.buscarPorId(id);
 
-        if (huespedOriginal == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (huespedOriginal != null) {
+
+            huespedService.actualizarHuesped(huespedOriginal, req);
+
+            GenericResponse resp = new GenericResponse();
+
+            resp.isOk = true;
+            resp.id = huespedOriginal.getHuespedId();
+            resp.message = "Huesped actualizado con éxito.";
+            return ResponseEntity.ok(resp);
+            
         }
-        boolean resultado = false;
-        resultado = huespedService.actualizarHuesped(huespedOriginal, req);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        if (resultado) {
-            r.isOk = true;
-            r.id = req.getHuespedId();
-            r.message = "Huesped actualizado con éxito.";
-            return ResponseEntity.ok(r);
-        } else {
-
-            r.isOk = false;
-            r.message = "No se pudo actualizra el huesped.";
-
-            return ResponseEntity.badRequest().body(r);
-        }
     }
 
 }

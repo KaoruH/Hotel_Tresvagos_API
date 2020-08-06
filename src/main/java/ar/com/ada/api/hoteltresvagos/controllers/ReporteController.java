@@ -5,15 +5,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import ar.com.ada.api.hoteltresvagos.entities.reportes.ReporteImportesEstado;
 import ar.com.ada.api.hoteltresvagos.entities.reportes.ReporteImportesHuesped;
 import ar.com.ada.api.hoteltresvagos.services.ReporteService;
 
-@Controller
+@RestController
 public class ReporteController {
 
     @Autowired
@@ -23,19 +23,20 @@ public class ReporteController {
     public ResponseEntity<?> getReportes(@RequestParam(value = "nombre", required = false) String nombre) {
 
         switch (nombre) {
-            case "ResumenReservasPorEstado":
+            case "ResumenReservasPorEstados":
 
-                List<ReporteImportesEstado> reporteEstado = reporteService.getReporteReservasPorEstado();
+                List<ReporteImportesEstado> re = reporteService.getReporteReservasPorEstado();
 
-                return ResponseEntity.ok(reporteEstado);
+                return ResponseEntity.ok(re);
 
-            case "ResumenReservasPorHuesped":
+            case "ResumenReservasPorHuespedes":
 
-                List<ReporteImportesHuesped> reporteHuesped = reporteService.getReporteReservasPorHuesped();
+                List<ReporteImportesHuesped> rh = reporteService.getReporteReservasPorHuesped();
 
-                return ResponseEntity.ok(reporteHuesped);
+                return ResponseEntity.ok(rh);
 
             default:
+
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

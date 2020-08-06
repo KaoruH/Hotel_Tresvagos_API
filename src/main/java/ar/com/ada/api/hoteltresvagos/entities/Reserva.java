@@ -13,7 +13,7 @@ public class Reserva {
     @Id
     @Column(name="reserva_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int reservaId;
+    private Integer reservaId;
     @Column(name="fecha_reserva")
     private LocalDate fechaReserva;
     @Column(name="fecha_ingreso")
@@ -28,16 +28,18 @@ public class Reserva {
     @Column(name="importe_pagado")
     private BigDecimal importePagado;
     @Column(name="estadopago_id")
-    private int estadoId;
+    private Integer estadoId;
     @ManyToOne
     @JoinColumn(name="huesped_id", referencedColumnName = "huesped_id")
     private Huesped huesped;
+    @Column(name = "total_adeudado")
+    private BigDecimal importeAdeudado;
 
-    public int getReservaId() {
+    public Integer getReservaId() {
         return reservaId;
     }
 
-    public void setReservaId(int reservaId) {
+    public void setReservaId(Integer reservaId) {
         this.reservaId = reservaId;
     }
 
@@ -97,11 +99,11 @@ public class Reserva {
         this.importePagado = importePagado;
     }
 
-    public int getEstadoId() {
+    public Integer getEstadoId() {
         return estadoId;
     }
 
-    public void setEstadoId(int estadoId) {
+    public void setEstadoId(Integer estadoId) {
         this.estadoId = estadoId;
     }
 
@@ -120,6 +122,14 @@ public class Reserva {
     public String toString() {
         
         return " [reservaid = "+ this.getReservaId() + ", importe total = " + this.getImporteTotal() + "] ";
+    }
+
+    public BigDecimal getImporteAdeudado() {
+        return importeAdeudado;
+    }
+
+    public void setImporteAdeudado(BigDecimal importeAdeudado) {
+        this.importeAdeudado = importeAdeudado;
     }
 
 

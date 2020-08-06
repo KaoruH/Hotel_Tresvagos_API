@@ -16,11 +16,13 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
     @Query("FROM Huesped WHERE nombre like CONCAT('%', :nombre,'%')")
     List<Reserva> findByNombreHuesped(@Param("nombre") String nombre);
 
-    @Query(value = "SELECT r.estadopago_id as estadoId, e.descripcion, count(r.reserva_id) as cantidadReservas, sum(r.importe_reserva) as totalImporteReserva, sum(r.importe_pagado) as totalImportePagado, sum(r.importe_total) importeTotal FROM reserva r INNER JOIN estadopago e ON r.estadopago_id = e.estadopago_id GROUP BY e.estadopago_id, e.descripcion", nativeQuery = true)
+    @Query(value = "SELECT r.estado_id estadoId, e.descripcion, count(r.reserva_id) cantidadReservas, sum(r.importe_reserva) totalImporteReserva, sum(r.importe_pagado) totalImportePagado, sum(r.importe_total) importeTotal FROM reserva r INNER JOIN estado_pago e ON r.estado_id = e.estado_pago_id GROUP BY e.estado_pago_id, e.descripcion", nativeQuery = true)
     List<ReporteImportesEstado> getReporteReservaPorEstado();
 
     @Query(value = "select h.huesped_id huespedId, h.nombre, sum(r.importe_reserva) importeReserva, sum(r.importe_pagado) importePagado, sum(r.importe_total) importeTotal from huesped h inner join reserva r on h.huesped_id = r.huesped_id group by h.huesped_id, h.nombre", nativeQuery = true)
     List<ReporteImportesHuesped> getReporteReservasPorHuesped();
 
-    
+    @Query("Select r FROM Reserva r WHERE r.huesped.dni = :dni")
+    List<Reserva> findAllByReservaDniHuesped(@Param("dni") int dni);
+
 }

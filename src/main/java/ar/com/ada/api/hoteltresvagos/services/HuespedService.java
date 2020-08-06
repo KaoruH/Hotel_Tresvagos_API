@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ar.com.ada.api.hoteltresvagos.entities.Huesped;
+import ar.com.ada.api.hoteltresvagos.models.request.PutHuespedRequest;
 import ar.com.ada.api.hoteltresvagos.repos.HuespedRepository;
 
 @Service
@@ -20,14 +21,14 @@ public class HuespedService {
         huespedRepo.save(huesped);
     }
 
-    public boolean existe(int dni){
+    public boolean existe(Integer dni){
 
         Huesped huesped = buscarPorDni(dni);
 
         return huesped != null;
     }
 
-    public Huesped buscarPorDni(int dni){
+    public Huesped buscarPorDni(Integer dni){
 
         return huespedRepo.findByDni(dni);
     }
@@ -54,7 +55,7 @@ public class HuespedService {
         return huespedRepo.findAll();
     }
 
-    public Huesped buscarPorId(int huespedId) {
+    public Huesped buscarPorId(Integer huespedId) {
 
         Optional<Huesped> b = huespedRepo.findById(huespedId);
 
@@ -63,7 +64,7 @@ public class HuespedService {
         return null;
     }
 
-    public boolean baja(int huespedId) {
+    public boolean baja(Integer huespedId) {
 
         Huesped huesped = buscarPorId(huespedId);
 
@@ -79,7 +80,7 @@ public class HuespedService {
         return true;
     }
 
-    public boolean bajaPorDni(int dni){
+    public boolean bajaPorDni(Integer dni){
 
         Huesped huesped = huespedRepo.findByDni(dni);
 
@@ -99,15 +100,13 @@ public class HuespedService {
 
     }
 
-    public boolean actualizarHuesped(Huesped huespedOriginal, Huesped huespedConInfoNueva){
+    public void actualizarHuesped(Huesped huespedOriginal, PutHuespedRequest huespedConInfoNueva){
 
         huespedOriginal.setNombre(huespedConInfoNueva.getNombre());
         huespedOriginal.setDomicilio(huespedConInfoNueva.getDomicilio());
         huespedOriginal.setDomicilioAlternativo(huespedConInfoNueva.getDomicilioAlternativo());
 
         grabar(huespedOriginal);
-
-        return true;
     }
     
 }

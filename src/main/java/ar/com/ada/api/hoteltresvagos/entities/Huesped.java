@@ -17,10 +17,10 @@ public class Huesped {
     @Id
     @Column(name = "huesped_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int huespedId;
+    private Integer huespedId;
     private String nombre;
     @NaturalId
-    private int dni;
+    private Integer dni;
     private String domicilio;
     @Column(name = "domicilio_alternativo")
     private String domicilioAlternativo;
@@ -37,11 +37,11 @@ public class Huesped {
     public Huesped() {
     }
 
-    public int getHuespedId() {
+    public Integer getHuespedId() {
         return huespedId;
     }
 
-    public void setHuespedId(int huespedId) {
+    public void setHuespedId(Integer huespedId) {
         this.huespedId = huespedId;
     }
 
@@ -53,7 +53,7 @@ public class Huesped {
         this.nombre = nombre;
     }
 
-    public void setDni(int dni) throws HuespedDNIException {
+    public void setDni(Integer dni) throws HuespedDNIException {
 
         if (dni < 0) {
             // no se ejecuta nada mas despues del throw
@@ -63,7 +63,7 @@ public class Huesped {
         this.dni = dni;
     }
 
-    public int getDni() {
+    public Integer getDni() {
         return dni;
     }
 
@@ -94,6 +94,13 @@ public class Huesped {
 
     public void setReservas(List<Reserva> reservas) {
         this.reservas = reservas;
+    }
+
+    public void agregarReserva(Reserva reserva){
+        
+        this.reservas.add(reserva);
+        reserva.setHuesped(this);
+
     }
 
 }
